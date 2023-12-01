@@ -1,11 +1,10 @@
 // ignore_for_file: empty_catches
 
-import 'package:admin_app_xem_tro/screen/admin_screen/admin_login_screen.dart';
+import 'package:admin_app_xem_tro/models/users.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
 
 class UserRepo {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Future<String> logIn(String phoneNumber) async {
     Map<String, dynamic>? response = await FirebaseFirestore.instance
         .collection('users')
@@ -15,13 +14,13 @@ class UserRepo {
     return response?["password"] ?? "";
   }
 
-  Future<bool> checkIfAdmin(String phoneNumber) async {
+  Future<int> checkIfAdmin(String phoneNumber) async {
     Map<String, dynamic>? response = await FirebaseFirestore.instance
         .collection('users')
         .doc(phoneNumber)
         .get()
         .then((value) => value.data());
-    return response?["isAdmin"] ?? false;
+    return response?["role"] ?? 0;
   }
 
   Future<String> checkIfPhoneNumberExists(String phoneNumber) async {
@@ -33,10 +32,27 @@ class UserRepo {
     return response?["phoneNumber"] ?? "";
   }
 
-  Future<void> logout() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-      Get.offAll(()=> const AdminLogin());
-    } catch (e) {}
+  Future<bool> checkingNumberPhone(String phoneNumber) async {
+    String response = await UserRepo().checkIfPhoneNumberExists(phoneNumber);
+    if (phoneNumber == response) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<List<User>> getUsersByRole(int role) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
+        .collection('users')
+        .where('role', isEqualTo: role)
+        .get();
+
+    return snapshot.docs.map((doc) => User.fromMap(doc.data())).toList();
+  }
+
+  Future<void> updateUserStatus(String userId, bool isBanned) async {
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .update({'isBanned': isBanned});
   }
 }

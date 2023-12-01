@@ -1,7 +1,9 @@
 import 'dart:convert';
 
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
+  String id;
   String password;
   String name;
   String phoneNumber;
@@ -9,9 +11,12 @@ class User {
   String email;
   String address;
   String? avatar;
-  bool isAdmin;
+  int role;
+  DateTime createAt;
+  bool isBanned;
 
   User({
+    required this.id,
     required this.password,
     required this.name,
     required this.phoneNumber,
@@ -19,7 +24,9 @@ class User {
     required this.email,
     required this.address,
     this.avatar,
-    required this.isAdmin,
+    required this.role,
+    required this.createAt,
+    required this.isBanned,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,12 +38,15 @@ class User {
       'email': email,
       'address': address,
       'avatar': avatar,
-      'isAdmin': isAdmin,
+      'role': role,
+      'createAt': Timestamp.fromDate(createAt),
+      "isBanned": isBanned,
     };
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
+      id: map['id'] ?? "",
       password: map['password'] ?? "",
       name: map['name'] ?? "",
       phoneNumber: map['phoneNumber'] ?? "",
@@ -44,7 +54,11 @@ class User {
       email: map['email'] ?? "",
       address: map['address'] ?? "",
       avatar: map['avatar'] != null ? map['avatar'] as String : null,
-      isAdmin: map['isAdmin'] ?? false,
+      role: map['role'] ?? 0,
+      createAt: map['createAt'] != null
+          ? (map['createAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      isBanned: map['isBanned'] ?? false,
     );
   }
 

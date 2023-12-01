@@ -1,16 +1,29 @@
 import 'package:admin_app_xem_tro/config/size_config.dart';
+import 'package:admin_app_xem_tro/models/house.dart';
+import 'package:admin_app_xem_tro/screen/admin_screen/Manage_house_approval/House_information/admin_approve_house_detail_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class Item extends StatelessWidget {
-  const Item({super.key});
+class HouseItem extends StatelessWidget {
+  final House house;
+
+  const HouseItem({Key? key, required this.house}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        // Navigate to HouseDetailScreen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HouseDetailScreen(house: house),
+          ),
+        );
       },
-      child: Ink(
+      child: Container(
+        padding: EdgeInsets.all(padding(context, padding: 0.02)),
+        margin: const EdgeInsets.symmetric(
+            vertical: 4), // Adjust vertical spacing between items
         child: AspectRatio(
           aspectRatio: 2,
           child: Container(
@@ -30,8 +43,7 @@ class Item extends StatelessWidget {
                       fit: BoxFit.cover,
                       placeholder: const AssetImage(
                           "assets/images/home_img/loading.gif"),
-                      image:
-                          const AssetImage("assets/images/home_img/home.png"),
+                      image: NetworkImage(house.img ?? ""),
                       imageErrorBuilder: (BuildContext context,
                           Object exception, StackTrace? stackTrace) {
                         return Image.network(
@@ -40,87 +52,71 @@ class Item extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                      flex: 5,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: padding(context, padding: 0.02),
-                            vertical: padding(context, padding: 0.01)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                  height: getHeight(context, height: 0.04),
-                                  width: getWidth(context, width: 0.04),
-                                  child: const Image(
-                                    image: AssetImage(
-                                        "assets/images/home_img/star.png"),
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                                spaceWidth(context, width: 0.02),
-                                Text(
-                                  "4.8(73)",
-                                  style: smallTextStyle(context),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              "Nhà trọ siêu cấp vip pro",
-                              style: smallTextStyle(context, size: 0.018),
-                            ),
-                            spaceHeight(context, height: 0.01),
-                            Text(
-                              "Địa chỉ",
-                              style: smallTextStyle(context,
-                                  color: Colors.grey, size: 0.018),
-                            ),
-                            spaceHeight(context, height: 0.01),
-                            Row(
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(Icons.bed),
-                                    spaceWidth(context, width: 0.02),
-                                    Text(
-                                      "2 Room",
-                                      style: smallTextStyle(context),
-                                    ),
-                                    spaceWidth(context, width: 0.04),
-                                    const Icon(Icons.bed),
-                                    spaceWidth(context, width: 0.02),
-                                    Text(
-                                      "2 Room",
-                                      style: smallTextStyle(context),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "\$ 526/month",
-                                    style: mediumTextStyle(
-                                      context,
-                                    ),
-                                  ),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        FontAwesomeIcons.heart,
-                                        size: getWidth(context, width: 0.05),
-                                      ))
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ))
+                    flex: 5,
+                    child: Padding(
+                      padding: EdgeInsets.all(padding(context)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            house.userName,
+                            style: largeTextStyle(context, size: 0.028),
+                          ),
+                          spaceHeight(context, height: 0.01),
+                          Text(
+                            house.address,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: smallTextStyle(context,
+                                color: Colors.grey, size: 0.018),
+                          ),
+                          // spaceHeight(context, height: 0.01),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Row(
+                          //       children: [
+                          //         const Icon(
+                          //           FontAwesomeIcons.bed,
+                          //           color: Colors.grey,
+                          //           size: 15,
+                          //         ),
+                          //         spaceWidth(context, width: 0.01),
+                          //         Text(
+                          //           house.room.numberOfPeople
+                          //               .toString(), // Convert to string
+                          //           style: smallTextStyle(context,
+                          //               color: Colors.grey),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //     Row(
+                          //       children: [
+                          //         const Icon(
+                          //           FontAwesomeIcons.house,
+                          //           color: Colors.grey,
+                          //           size: 15,
+                          //         ),
+                          //         spaceWidth(context, width: 0.01),
+                          //         Text(
+                          //           house.room.acreage
+                          //               .toString(), // Convert to string
+                          //           style: smallTextStyle(context,
+                          //               color: Colors.grey),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ],
+                          // ),
+                          // spaceHeight(context, height: 0.01),
+                          // Text(
+                          //   house.room.price.toString(), // Convert to string
+                          //   style: mediumTextStyle(context),
+                          // ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
