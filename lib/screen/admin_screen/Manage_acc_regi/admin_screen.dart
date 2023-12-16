@@ -3,9 +3,11 @@
 import 'package:admin_app_xem_tro/config/size_config.dart';
 import 'package:admin_app_xem_tro/config/widget/button_list_tile.dart';
 import 'package:admin_app_xem_tro/config/widget/app_bar_draw.dart';
+import 'package:admin_app_xem_tro/provider/bar_provider.dart';
 import 'package:admin_app_xem_tro/screen/admin_screen/Manage_acc_regi/graph/bart_grap.dart';
 import 'package:admin_app_xem_tro/config/widget/navigation_draw.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key});
@@ -31,7 +33,7 @@ class _AdminScreenState extends State<AdminScreen> {
         child: Container(
           padding: EdgeInsets.all(padding(context)),
           child: Column(
-            children: [
+            children: [              
               Container(
                 padding: EdgeInsets.all(padding(context)),
                 decoration: BoxDecoration(
@@ -45,7 +47,6 @@ class _AdminScreenState extends State<AdminScreen> {
                       onValueChanged: (value) {
                         setState(() {
                           selectedUserTimeRange = value;
-                          updateGraphs();
                         });
                       },
                     ),
@@ -76,7 +77,6 @@ class _AdminScreenState extends State<AdminScreen> {
                       onValueChanged: (value) {
                         setState(() {
                           selectedLandlordTimeRange = value;
-                          updateGraphs();
                         });
                       },
                     ),
@@ -98,6 +98,14 @@ class _AdminScreenState extends State<AdminScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<BarDataProvider>(context, listen: false).addListener(() {
+      updateGraphs();
+    });
   }
 
   void updateGraphs() {

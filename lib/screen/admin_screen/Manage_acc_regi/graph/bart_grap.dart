@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names, unnecessary_nullable_for_final_variable_declarations, unrelated_type_equality_checks
 
+import 'dart:async';
+
 import 'package:admin_app_xem_tro/config/size_config.dart';
 import 'package:admin_app_xem_tro/models/users.dart';
 import 'package:admin_app_xem_tro/provider/bar_provider.dart';
@@ -34,6 +36,8 @@ class MyBarGraphState extends State<MyBarGraph> {
   bool dataLoaded = false;
   bool _isMounted = false;
 
+  Timer? updateTimer;
+
   @override
   void initState() {
     super.initState();
@@ -43,12 +47,17 @@ class MyBarGraphState extends State<MyBarGraph> {
     fetchDataAndUpdateGraph();
     Provider.of<BarDataProvider>(context, listen: false).onDataChanged =
         () => updateGraph();
+    updateTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
+      if (_isMounted) {
+        fetchDataAndUpdateGraph();
+      }
+    });
   }
 
   @override
   void dispose() {
     _isMounted = false;
-    // Cancel any ongoing operations, subscriptions, or timers here.
+    updateTimer?.cancel();
     super.dispose();
   }
 
@@ -92,10 +101,10 @@ class MyBarGraphState extends State<MyBarGraph> {
       myBarDataMonth.initializeBarDataMonth();
     }
 
-    if (kDebugMode) {
-      print('Weekly Registrations: $weeklyUserRegistrations');
-      print('Monthly Registrations: $monthlyUserRegistrations');
-    }
+    // if (kDebugMode) {
+    //   print('Weekly Registrations: $weeklyUserRegistrations');
+    //   print('Monthly Registrations: $monthlyUserRegistrations');
+    // }
   }
 
   void updateGraph() {

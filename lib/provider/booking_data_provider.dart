@@ -13,28 +13,28 @@ class BookingDataProvider extends ChangeNotifier {
   int get totalCancelCount => _totalCancelCount;
 
   Future<void> loadData() async {
-  try {
-    int newBookedCount = await _bookingRepository.getTotalBookedCount();
-    int newCancelCount = await _bookingRepository.getTotalCancelCount();
+    try {
+      int newBookedCount = await _bookingRepository.getTotalBookedCount();
+      int newCancelCount = await _bookingRepository.getTotalCancelCount();
 
-    // Check if the data has actually changed before updating
-    if (_totalBookedCount != newBookedCount || _totalCancelCount != newCancelCount) {
-      _totalBookedCount = newBookedCount;
-      _totalCancelCount = newCancelCount;
+      // Check if the data has actually changed before updating
+      if (_totalBookedCount != newBookedCount || _totalCancelCount != newCancelCount) {
+        _totalBookedCount = newBookedCount;
+        _totalCancelCount = newCancelCount;
 
-      if (kDebugMode) {
-        print('Total Booking Count: $_totalBookedCount');
-        print('Total Cancel Count: $_totalCancelCount');
+        if (kDebugMode) {
+          print('Total Booking Count: $_totalBookedCount');
+          print('Total Cancel Count: $_totalCancelCount');
+        }
+
+        onDataChanged?.call();
+        notifyListeners();
       }
-
-      onDataChanged?.call();
-      notifyListeners();
-    }
-  } catch (error) {
-    if (kDebugMode) {
-      print("Error loading data: $error");
+    } catch (error) {
+      // Handle the error, such as logging or displaying an error message
+      if (kDebugMode) {
+        print("Error loading data: $error");
+      }
     }
   }
-}
-
 }

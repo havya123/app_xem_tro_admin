@@ -1,13 +1,17 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'dart:async';
 
 import 'package:admin_app_xem_tro/models/house.dart';
 import 'package:admin_app_xem_tro/repository/house_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class HouseProvider with ChangeNotifier {
   final HouseRepository _houseRepository = HouseRepository();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   StreamSubscription<List<House>>? _allHousesSubscription;
   StreamSubscription<List<House>>? _housesWaitingSubscription;
@@ -19,8 +23,34 @@ class HouseProvider with ChangeNotifier {
   List<House> housesAccept = [];
   List<House> housesDeclines = [];
 
+  BuildContext? _context;
+
   HouseProvider() {
     _init();
+  }
+
+ Future<void> refreshData() async {
+    try {
+      // Implement logic to refresh data, e.g., refetching from the repository
+      // or calling the necessary methods to update the data.
+      // For example, you might want to re-fetch the data from Firestore.
+
+      // Fetch waiting houses
+      housesWaiting = await _houseRepository.getHousesByStatus('waiting');
+
+      // Fetch accepted houses
+      housesAccept = await _houseRepository.getHousesByStatus('accept');
+
+      // Fetch declined houses
+      housesDeclines = await _houseRepository.getHousesByStatus('declines');
+
+      notifyListeners();
+    } catch (e) {
+      // Handle error gracefully, log, or show a user-friendly message
+      if (kDebugMode) {
+        print('Error refreshing data: $e');
+      }
+    }
   }
 
   Future<void> acceptHouse(String houseId) async {
@@ -32,6 +62,7 @@ class HouseProvider with ChangeNotifier {
       if (kDebugMode) {
         print('Error accepting house: $e');
       }
+      showSnackBar('Failed to accept house. Please try again.');
       rethrow;
     }
   }
@@ -45,7 +76,32 @@ class HouseProvider with ChangeNotifier {
       if (kDebugMode) {
         print('Error rejecting house: $e');
       }
+      showSnackBar('Failed to reject house. Please try again.');
       rethrow;
+    }
+  }
+
+  void setContext(BuildContext context) {
+    _context = context;
+  }
+
+  void showSnackBar(String message) {
+    if (_context != null) {
+      final snackBar = SnackBar(
+        content: Text(message),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {
+            ScaffoldMessenger.of(_context!).hideCurrentSnackBar();
+          },
+        ),
+      );
+
+      ScaffoldMessenger.of(_context!).showSnackBar(snackBar);
+    } else {
+      if (kDebugMode) {
+        print("Context is not set. Unable to show SnackBar.");
+      }
     }
   }
 
@@ -56,6 +112,12 @@ class HouseProvider with ChangeNotifier {
         housesWaiting = houses;
         if (kDebugMode) {
           print('Updated houses - Waiting: ${housesWaiting.length}');
+          housesWaiting.forEach((house) {
+            if (kDebugMode) {
+              print(
+                'House ID: ${house.houseId}, Document ID: ${house.documentId}');
+            }
+          });
         }
         notifyListeners();
       } catch (e) {
@@ -72,6 +134,12 @@ class HouseProvider with ChangeNotifier {
         housesAccept = houses;
         if (kDebugMode) {
           print('Updated houses - Approved: ${housesAccept.length}');
+          housesWaiting.forEach((house) {
+            if (kDebugMode) {
+              print(
+                'House ID: ${house.houseId}, Document ID: ${house.documentId}');
+            }
+          });
         }
         notifyListeners();
       } catch (e) {
@@ -88,6 +156,12 @@ class HouseProvider with ChangeNotifier {
         housesDeclines = houses;
         if (kDebugMode) {
           print('Updated houses - Rejected: ${housesDeclines.length}');
+          housesWaiting.forEach((house) {
+            if (kDebugMode) {
+              print(
+                'House ID: ${house.houseId}, Document ID: ${house.documentId}');
+            }
+          });
         }
         notifyListeners();
       } catch (e) {
@@ -106,5 +180,5 @@ class HouseProvider with ChangeNotifier {
     _housesAcceptSubscription?.cancel();
     _housesDeclinesSubscription?.cancel();
     super.dispose();
-  }
+  }  
 }

@@ -49,10 +49,18 @@ class UserRepo {
     return snapshot.docs.map((doc) => User.fromMap(doc.data())).toList();
   }
 
-  Future<void> updateUserStatus(String userId, bool isBanned) async {
+  Future<User> getUserByPhoneNumber(String phoneNumber) async {
+    DocumentSnapshot<Map<String, dynamic>> snapshot =
+        await _firestore.collection('users').doc(phoneNumber).get();
+
+    return User.fromMap(snapshot.data() ?? {});
+  }
+
+  Future<void> updateUserStatus(
+      String userId, bool isBanned, int newRole) async {
     await _firestore
         .collection('users')
         .doc(userId)
-        .update({'isBanned': isBanned});
+        .update({'isBanned': isBanned, 'role': newRole});
   }
 }

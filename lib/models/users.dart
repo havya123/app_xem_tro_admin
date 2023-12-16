@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
-  String id;
   String password;
+  String userID;
   String name;
   String phoneNumber;
   String dob;
@@ -15,8 +15,10 @@ class User {
   DateTime createAt;
   bool isBanned;
 
+  String get documentId => userID;
+
   User({
-    required this.id,
+    required this.userID,
     required this.password,
     required this.name,
     required this.phoneNumber,
@@ -46,7 +48,7 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'] ?? "",
+      userID: map['userID'] ?? "",
       password: map['password'] ?? "",
       name: map['name'] ?? "",
       phoneNumber: map['phoneNumber'] ?? "",

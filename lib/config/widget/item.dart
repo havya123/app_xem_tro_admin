@@ -12,7 +12,6 @@ class HouseItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigate to HouseDetailScreen
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -23,7 +22,7 @@ class HouseItem extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(padding(context, padding: 0.02)),
         margin: const EdgeInsets.symmetric(
-            vertical: 4), // Adjust vertical spacing between items
+            vertical: 4),
         child: AspectRatio(
           aspectRatio: 2,
           child: Container(
@@ -59,8 +58,13 @@ class HouseItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            house.userName,
-                            style: largeTextStyle(context, size: 0.028),
+                            house.houseName,
+                            style: largeTextStyle(context, size: 0.03),
+                          ),
+                          spaceHeight(context, height: 0.01),
+                          Text(
+                            "Landlord: \n${house.userName}",
+                            style: largeTextStyle(context, size: 0.024),
                           ),
                           spaceHeight(context, height: 0.01),
                           Text(
@@ -70,49 +74,7 @@ class HouseItem extends StatelessWidget {
                             style: smallTextStyle(context,
                                 color: Colors.grey, size: 0.018),
                           ),
-                          // spaceHeight(context, height: 0.01),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     Row(
-                          //       children: [
-                          //         const Icon(
-                          //           FontAwesomeIcons.bed,
-                          //           color: Colors.grey,
-                          //           size: 15,
-                          //         ),
-                          //         spaceWidth(context, width: 0.01),
-                          //         Text(
-                          //           house.room.numberOfPeople
-                          //               .toString(), // Convert to string
-                          //           style: smallTextStyle(context,
-                          //               color: Colors.grey),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //     Row(
-                          //       children: [
-                          //         const Icon(
-                          //           FontAwesomeIcons.house,
-                          //           color: Colors.grey,
-                          //           size: 15,
-                          //         ),
-                          //         spaceWidth(context, width: 0.01),
-                          //         Text(
-                          //           house.room.acreage
-                          //               .toString(), // Convert to string
-                          //           style: smallTextStyle(context,
-                          //               color: Colors.grey),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ],
-                          // ),
-                          // spaceHeight(context, height: 0.01),
-                          // Text(
-                          //   house.room.price.toString(), // Convert to string
-                          //   style: mediumTextStyle(context),
-                          // ),
+                          spaceHeight(context, height: 0.01),
                         ],
                       ),
                     ),

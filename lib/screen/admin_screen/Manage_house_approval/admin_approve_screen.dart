@@ -16,12 +16,21 @@ class AdminApproveScreen extends StatefulWidget {
 }
 
 class _AdminApproveScreenState extends State<AdminApproveScreen> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
   @override
   void initState() {
     super.initState();
     if (kDebugMode) {
       print('Initializing AdminApproveScreen...');
     }
+  }
+
+  Future<void> _refreshData() async {
+    final houseProvider = Provider.of<HouseProvider>(context, listen: false);
+    await houseProvider
+        .refreshData();
   }
 
   @override
@@ -42,12 +51,16 @@ class _AdminApproveScreenState extends State<AdminApproveScreen> {
         ),
         drawer: const NavigationDraw(),
         body: SafeArea(
-          child: TabBarView(
-            children: [
-              _buildTab(houseProvider.housesWaiting),
-              _buildTab(houseProvider.housesAccept),
-              _buildTab(houseProvider.housesDeclines),
-            ],
+          child: RefreshIndicator(
+            key: _refreshIndicatorKey,
+            onRefresh: _refreshData,
+            child: TabBarView(
+              children: [
+                _buildTab(houseProvider.housesWaiting),
+                _buildTab(houseProvider.housesAccept),
+                _buildTab(houseProvider.housesDeclines),
+              ],
+            ),
           ),
         ),
       ),

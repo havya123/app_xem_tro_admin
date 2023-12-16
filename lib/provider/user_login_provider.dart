@@ -12,47 +12,69 @@ class AdminUserLoginProvider extends ChangeNotifier {
   bool get isLoggedIn => _isLoggedIn;
 
   Future<bool> login(String phoneNumber, String password) async {
-    int repositoryAdmin = await UserRepo().checkIfAdmin(phoneNumber);
-    String response = await UserRepo().logIn(phoneNumber);
-    print(response);
+    try {
+      int repositoryAdmin = await UserRepo().checkIfAdmin(phoneNumber);
+      String response = await UserRepo().logIn(phoneNumber);
 
-    if (repositoryAdmin == 0) {
-      if (response == "") {
+      if (repositoryAdmin == 0) {
+        if (response.isEmpty) {
+          await _saveLoginStatus(false);
+          return false;
+        }
+        if (password == response) {
+          await _saveLoginStatus(true);
+          _isLoggedIn = true;
+          return true;
+        }
+      } else {
         await _saveLoginStatus(false);
         return false;
       }
-      if (password == response) {
-        await _saveLoginStatus(true);
-        _isLoggedIn = true;
-        return true;
-      }
-    } else {
+
+      await _saveLoginStatus(false);
+      return false;
+    } catch (e) {
+      // Handle login error here
+      print("Login error: $e");
       await _saveLoginStatus(false);
       return false;
     }
-
-    await _saveLoginStatus(false);
-    return false;
   }
 
   Future<int> checkAdmin(String phoneNumber, String password) async {
-    int repositoryAdmin = await UserRepo().checkIfAdmin(phoneNumber);
-    if (repositoryAdmin == 0) {
-      return 0;
-    } else {
-      return 1;
+    try {
+      int repositoryAdmin = await UserRepo().checkIfAdmin(phoneNumber);
+      if (repositoryAdmin == 0) {
+        return 0;
+      } else {
+        return 1;
+      }
+    } catch (e) {
+      // Handle checkAdmin error here
+      print("CheckAdmin error: $e");
+      return -1; // Return a specific value to indicate an error
     }
   }
 
   Future<void> _saveLoginStatus(bool status) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', status);
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', status);
+    } catch (e) {
+      // Handle _saveLoginStatus error here
+      print("SaveLoginStatus error: $e");
+    }
   }
 
   Future<void> readLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    notifyListeners();
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+      notifyListeners();
+    } catch (e) {
+      // Handle readLoginStatus error here
+      print("ReadLoginStatus error: $e");
+    }
   }
 
   Future<void> logout() async {
@@ -61,6 +83,9 @@ class AdminUserLoginProvider extends ChangeNotifier {
       _isLoggedIn = false;
       await FirebaseAuth.instance.signOut();
       Get.offAll(() => const AdminLogin());
-    } catch (e) {}
+    } catch (e) {
+      // Handle logout error here
+      print("Logout error: $e");
+    }
   }
 }

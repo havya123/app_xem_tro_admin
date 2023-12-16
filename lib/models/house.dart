@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:admin_app_xem_tro/models/room.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class House {
   String houseId;
+  String houseName;
   String userName;
   String userPhone;
   String phoneNumber;
@@ -20,12 +20,13 @@ class House {
   String? img;
   String createdAt;
   String status;
-  Room room;
 
   String get address => '$street, $ward, $district, $province';
+  String get documentId => houseId;
 
   House({
     required this.houseId,
+    required this.houseName,
     required this.userName,
     required this.userPhone,
     required this.phoneNumber,
@@ -40,12 +41,12 @@ class House {
     this.img,
     required this.createdAt,
     required this.status,
-    required this.room,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'userName': userName,
+      'houseName':houseName,
       'userPhone': userPhone,
       'phoneNumber': phoneNumber,
       'province': province,
@@ -59,13 +60,13 @@ class House {
       'img': img,
       'createdAt': createdAt,
       'status': status,
-      'room': room.toMap(),
     };
   }
 
-  factory House.fromMap(Map<String, dynamic> map, String documentId) {
+  factory House.fromMap(Map<String, dynamic> map) {
     return House(
-      houseId: documentId,
+      houseId: map['documentId'] ?? '',
+      houseName: map['houseName'] ?? '',
       userName: map['userName'] ?? "",
       userPhone: map['userPhone'] ?? "",
       phoneNumber: map['phoneNumber'] ?? "",
@@ -80,7 +81,6 @@ class House {
       img: map['img'],
       createdAt: map['createdAt'] ?? "",
       status: map['status'] ?? "",
-      room: Room.fromMap(map['room'] ?? {}),
     );
   }
 
@@ -89,7 +89,8 @@ class House {
     if (data == null) {
       // Handle the case when data is null, return a default instance or throw an error.
       return House(
-        houseId: snapshot.id,
+        houseId:'',
+        houseName:'',
         userName: '',
         userPhone: '',
         phoneNumber: '',
@@ -102,13 +103,13 @@ class House {
         facilities: '',
         createdAt: '',
         status: '',
-        room: Room.fromMap({}), // or provide default values for Room
       );
     }
 
     try {
       return House(
         houseId: snapshot.id,
+        houseName:data['houseName'] as String? ?? '',
         userName: data['userName'] as String? ?? '',
         userPhone: data['userPhone'] as String? ?? '',
         phoneNumber: data['phoneNumber'] as String? ?? '',
@@ -123,15 +124,14 @@ class House {
         img: data['img'] as String?,
         createdAt: data['createdAt'] as String? ?? '',
         status: data['status'] as String? ?? '',
-        room: Room.fromMap(data['room'] as Map<String, dynamic>? ?? {}),
       );
     } catch (e, stackTrace) {
       if (kDebugMode) {
         print("Error parsing House from snapshot: $e\n$stackTrace");
       }
-      // Handle the error or return a default instance.
       return House(
         houseId: snapshot.id,
+        houseName: '',
         userName: '',
         userPhone: '',
         phoneNumber: '',
@@ -144,7 +144,6 @@ class House {
         facilities: '',
         createdAt: '',
         status: '',
-        room: Room.fromMap({}), // or provide default values for Room
       );
     }
   }
@@ -152,5 +151,5 @@ class House {
   String toJson() => json.encode(toMap());
 
   factory House.fromJson(String source) =>
-      House.fromMap(json.decode(source), "");
+      House.fromMap(json.decode(source));
 }
