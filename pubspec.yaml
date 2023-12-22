@@ -57,6 +57,10 @@ dependencies:
   table_calendar: ^3.0.9
   intl: ^0.18.1
   flutter_map: ^6.0.1
+  firebase_messaging: ^14.7.9
+  date_picker_timeline: ^1.2.5
+  flutter_screenutil: ^5.9.0
+
   
 dev_dependencies:
   flutter_test:
