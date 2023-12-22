@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
+  bool? isAdmin;
   String password;
   String userID;
   String name;
@@ -26,6 +27,7 @@ class User {
     required this.email,
     required this.address,
     this.avatar,
+    this.isAdmin,
     required this.role,
     required this.createAt,
     required this.isBanned,
@@ -43,6 +45,7 @@ class User {
       'role': role,
       'createAt': Timestamp.fromDate(createAt),
       "isBanned": isBanned,
+      "isAdmin": isAdmin,
     };
   }
 
@@ -61,6 +64,7 @@ class User {
           ? (map['createAt'] as Timestamp).toDate()
           : DateTime.now(),
       isBanned: map['isBanned'] ?? false,
+      isAdmin: map['isAdmin'] ?? false,
     );
   }
 

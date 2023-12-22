@@ -76,9 +76,11 @@ class _MyPieGraphState extends State<MyPieGraph> {
                     RadialBarSeries<BookingData, String>(
                       dataSource: [
                         BookingData(
-                            'Booked', widget.dataProvider.totalBookedCount),
+                            'Waiting', widget.dataProvider.totalWaitingCount),
                         BookingData(
-                            'Cancel', widget.dataProvider.totalCancelCount),
+                            'Accept', widget.dataProvider.totalAcceptCount),
+                        BookingData(
+                            'Decline', widget.dataProvider.totalDeclineCount),
                       ],
                       yValueMapper: (BookingData data, _) => data.count,
                       xValueMapper: (BookingData data, _) => data.status,

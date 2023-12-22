@@ -29,45 +29,198 @@ enum Month {
 }
 
 class BarChartDataProcessor {
-  static BarDataWeek calculateBarDataWeek(List<User> weeklyUserRegistrations, int role) {
+  static BarDataWeek calculateBarDataWeek(
+      List<User> weeklyUserRegistrations, int user, int landlord) {
     return BarDataWeek(
-      monAmount: calculateTotalAmountForDay(weeklyUserRegistrations, DayOfWeek.Monday, role),
-      tueAmount: calculateTotalAmountForDay(weeklyUserRegistrations, DayOfWeek.Tuesday, role),
-      wedAmount: calculateTotalAmountForDay(weeklyUserRegistrations, DayOfWeek.Wednesday, role),
-      thurAmount: calculateTotalAmountForDay(weeklyUserRegistrations, DayOfWeek.Thursday, role),
-      friAmount: calculateTotalAmountForDay(weeklyUserRegistrations, DayOfWeek.Friday, role),
-      satAmount: calculateTotalAmountForDay(weeklyUserRegistrations, DayOfWeek.Saturday, role),
-      sunAmount: calculateTotalAmountForDay(weeklyUserRegistrations, DayOfWeek.Sunday, role),
+      monUserAmount: calculateTotalUserCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Monday, user),
+      monLandlordAmount: calculateTotalLandlordCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Monday, landlord),
+      tueUserAmount: calculateTotalUserCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Tuesday, user),
+      tueLandlordAmount: calculateTotalLandlordCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Tuesday, landlord),
+      wedUserAmount: calculateTotalUserCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Wednesday, user),
+      wedLandlordAmount: calculateTotalLandlordCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Wednesday, landlord),
+      thurUserAmount: calculateTotalUserCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Thursday, user),
+      thurLandlordAmount: calculateTotalLandlordCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Thursday, landlord),
+      friUserAmount: calculateTotalUserCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Friday, user),
+      friLandlordAmount: calculateTotalLandlordCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Friday, landlord),
+      satUserAmount: calculateTotalUserCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Saturday, user),
+      satLandlordAmount: calculateTotalLandlordCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Saturday, landlord),
+      sunUserAmount: calculateTotalUserCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Sunday, user),
+      sunLandlordAmount: calculateTotalLandlordCountForDay(
+          weeklyUserRegistrations, DayOfWeek.Sunday, landlord),
     );
   }
 
-  static BarDataMonth calculateBarDataMonth(List<User> monthlyUserRegistrations, int role) {
+  static BarDataMonth calculateBarDataMonth(
+      List<User> monthlyUserRegistrations, int user, int landlord) {
     return BarDataMonth(
-      janAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.January, role),
-      febAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.February, role),
-      marAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.March, role),
-      aprAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.April, role),
-      mayAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.May, role),
-      junAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.June, role),
-      julAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.July, role),
-      augAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.August, role),
-      sepAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.September, role),
-      octAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.October, role),
-      novAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.November, role),
-      decAmount: calculateTotalAmountForMonth(monthlyUserRegistrations, Month.December, role),
+      janUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.January,
+        user,
+      ),
+      janLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.January,
+        landlord,
+      ),
+      febUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.February,
+        user,
+      ),
+      febLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.February,
+        landlord,
+      ),
+      marUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.March,
+        user,
+      ),
+      marLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.March,
+        landlord,
+      ),
+      aprUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.April,
+        user,
+      ),
+      aprLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.April,
+        landlord,
+      ),
+      mayUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.May,
+        user,
+      ),
+      mayLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.May,
+        landlord,
+      ),
+      junUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.June,
+        user,
+      ),
+      junLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.June,
+        landlord,
+      ),
+      julUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.July,
+        user,
+      ),
+      julLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.July,
+        landlord,
+      ),
+      augUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.August,
+        user,
+      ),
+      augLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.August,
+        landlord,
+      ),
+      sepUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.September,
+        user,
+      ),
+      sepLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.September,
+        landlord,
+      ),
+      octUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.October,
+        user,
+      ),
+      octLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.October,
+        landlord,
+      ),
+      novUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.November,
+        user,
+      ),
+      novLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.November,
+        landlord,
+      ),
+      decUserAmount: calculateTotalUserCountForMonth(
+        monthlyUserRegistrations,
+        Month.December,
+        user,
+      ),
+      decLandlordAmount: calculateTotalLandlordCountForMonth(
+        monthlyUserRegistrations,
+        Month.December,
+        landlord,
+      ),
     );
   }
 
-  static double calculateTotalAmountForDay(List<User> users, DayOfWeek day, int role) {
+  static double calculateTotalUserCountForDay(
+      List<User> users, DayOfWeek day, int userRole) {
     return users
-        .where((user) => user.createAt.weekday == day.index + 1 && user.role == role)
+        .where((user) =>
+            user.createAt.weekday == day.index + 1 && user.role == userRole)
         .length
         .toDouble();
   }
 
-  static double calculateTotalAmountForMonth(List<User> users, Month month, int role) {
+  static double calculateTotalLandlordCountForDay(
+      List<User> users, DayOfWeek day, int landlordRole) {
     return users
-        .where((user) => user.createAt.month == month.index + 1 && user.role == role)
+        .where((user) =>
+            user.createAt.weekday == day.index + 1 && user.role == landlordRole)
+        .length
+        .toDouble();
+  }
+
+  static double calculateTotalUserCountForMonth(
+      List<User> users, Month month, int userRole) {
+    return users
+        .where((user) =>
+            user.createAt.month == month.index + 1 && user.role == userRole)
+        .length
+        .toDouble();
+  }
+
+  static double calculateTotalLandlordCountForMonth(
+      List<User> users, Month month, int landlordRole) {
+    return users
+        .where((user) =>
+            user.createAt.month == month.index + 1 && user.role == landlordRole)
         .length
         .toDouble();
   }

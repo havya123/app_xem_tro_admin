@@ -13,14 +13,16 @@ class AdminUserLoginProvider extends ChangeNotifier {
 
   Future<bool> login(String phoneNumber, String password) async {
     try {
-      int repositoryAdmin = await UserRepo().checkIfAdmin(phoneNumber);
-      String response = await UserRepo().logIn(phoneNumber);
+      bool isAdmin = await checkAdmin(phoneNumber, password);
 
-      if (repositoryAdmin == 0) {
+      if (isAdmin) {
+        String response = await UserRepo().logIn(phoneNumber);
+
         if (response.isEmpty) {
           await _saveLoginStatus(false);
           return false;
         }
+
         if (password == response) {
           await _saveLoginStatus(true);
           _isLoggedIn = true;
@@ -41,18 +43,19 @@ class AdminUserLoginProvider extends ChangeNotifier {
     }
   }
 
-  Future<int> checkAdmin(String phoneNumber, String password) async {
+  Future<bool> checkAdmin(String phoneNumber, String password) async {
     try {
-      int repositoryAdmin = await UserRepo().checkIfAdmin(phoneNumber);
-      if (repositoryAdmin == 0) {
-        return 0;
+      bool repositoryAdmin = await UserRepo().checkIfAdmin(phoneNumber);
+
+      if (repositoryAdmin == false) {
+        return false; // Not an admin
       } else {
-        return 1;
+        return true; // Is an admin
       }
     } catch (e) {
       // Handle checkAdmin error here
       print("CheckAdmin error: $e");
-      return -1; // Return a specific value to indicate an error
+      return false; // Return a default value to indicate an error
     }
   }
 

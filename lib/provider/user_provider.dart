@@ -20,7 +20,7 @@ class AdminUserProvider extends ChangeNotifier {
 
   Future<List<User>> loadBlacklist() async {
     try {
-      List<User> loadedUsers = await _userRepository.getUsersByRole(3);
+      List<User> loadedUsers = await _userRepository.getUsersisBan(true);
       return loadedUsers.where((user) => user.isBanned).toList();
     } catch (e) {
       if (kDebugMode) {
@@ -34,15 +34,14 @@ class AdminUserProvider extends ChangeNotifier {
     try {
       bool newStatus = !user.isBanned;
 
-      User originalUserData = await _userRepository.getUserByPhoneNumber(user.phoneNumber);
-
-      int originalRole = newStatus ? originalUserData.role : 3;
-      int newRole = newStatus ? 3 : originalRole;
-
-      await _userRepository.updateUserStatus(user.phoneNumber, newStatus, newRole);
-      print('User status toggled successfully: ${user.documentId}');
+      await _userRepository.updateUserStatus(user.phoneNumber, newStatus);
+      if (kDebugMode) {
+        print('User status toggled successfully: ${user.documentId}');
+      }
     } catch (e) {
-      print('Error toggling user status: $e');
+      if (kDebugMode) {
+        print('Error toggling user status: $e');
+      }
       rethrow;
     }
   }

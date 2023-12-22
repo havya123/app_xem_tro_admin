@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +45,17 @@ class _AdminAppXemTroState extends State<AdminAppXemTro> {
       ],
       builder: (context, child) {
         return GetMaterialApp(
+          builder: (context, child) {
+            var isLandscape =
+                MediaQuery.of(context).orientation == Orientation.landscape;
+            SystemChrome.setPreferredOrientations([
+              isLandscape
+                  ? DeviceOrientation.landscapeLeft
+                  : DeviceOrientation.portraitUp,
+              DeviceOrientation.portraitDown,
+            ]);
+            return child!;
+          },
           debugShowCheckedModeBanner: false,
           initialRoute: widget.authProvider.isLoggedIn
               ? Routes.adminRoute
@@ -54,7 +66,4 @@ class _AdminAppXemTroState extends State<AdminAppXemTro> {
       },
     );
   }
-
-
 }
-

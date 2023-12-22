@@ -1,9 +1,12 @@
 class IndividualBar {
-  final int x;
-  final double y;
+  final double x;
+  final double yUsers;
+  final double yLandlords;
 
   IndividualBar({
     required this.x,
-    required this.y,
+    required this.yUsers,
+    required this.yLandlords,
   });
 }
+

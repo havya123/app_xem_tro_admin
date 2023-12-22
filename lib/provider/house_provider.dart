@@ -29,12 +29,8 @@ class HouseProvider with ChangeNotifier {
     _init();
   }
 
- Future<void> refreshData() async {
+  Future<void> refreshData() async {
     try {
-      // Implement logic to refresh data, e.g., refetching from the repository
-      // or calling the necessary methods to update the data.
-      // For example, you might want to re-fetch the data from Firestore.
-
       // Fetch waiting houses
       housesWaiting = await _houseRepository.getHousesByStatus('waiting');
 
@@ -115,7 +111,7 @@ class HouseProvider with ChangeNotifier {
           housesWaiting.forEach((house) {
             if (kDebugMode) {
               print(
-                'House ID: ${house.houseId}, Document ID: ${house.documentId}');
+                  'House ID: ${house.houseId}, Document ID: ${house.documentId}');
             }
           });
         }
@@ -137,7 +133,7 @@ class HouseProvider with ChangeNotifier {
           housesWaiting.forEach((house) {
             if (kDebugMode) {
               print(
-                'House ID: ${house.houseId}, Document ID: ${house.documentId}');
+                  'House ID: ${house.houseId}, Document ID: ${house.documentId}');
             }
           });
         }
@@ -159,7 +155,7 @@ class HouseProvider with ChangeNotifier {
           housesWaiting.forEach((house) {
             if (kDebugMode) {
               print(
-                'House ID: ${house.houseId}, Document ID: ${house.documentId}');
+                  'House ID: ${house.houseId}, Document ID: ${house.documentId}');
             }
           });
         }
@@ -180,5 +176,5 @@ class HouseProvider with ChangeNotifier {
     _housesAcceptSubscription?.cancel();
     _housesDeclinesSubscription?.cancel();
     super.dispose();
-  }  
+  }
 }

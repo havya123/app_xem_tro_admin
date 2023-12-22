@@ -1,56 +1,76 @@
-import 'dart:async';
 import 'package:admin_app_xem_tro/models/users.dart';
 import 'package:admin_app_xem_tro/repository/bar_repository.dart';
 import 'package:flutter/foundation.dart';
 
 class BarDataProvider with ChangeNotifier {
-  final BarRepository _userRepository = BarRepository();
+  final BarRepository _barRepository = BarRepository();
 
   List<User> weeklyUserRegistrations = [];
-  List<User> monthlyUserRegistrations = [];
+  List<User> yearlyUserRegistrations = [];
 
   VoidCallback? onDataChanged;
 
-  Future<void> fetchUserRegistrations() async {
+  BarDataProvider() {
+    // Listen for changes in the data
+    _barRepository.userRegistrationsStream().listen((List<User> newData) {
+      updateWeeklyUserRegistrations(newData);
+    });
+
+    _barRepository.userRegistrationsYearStream().listen((List<User> newData) {
+      updateYearUserRegistrations(newData);
+    });
+  }
+
+  Future<void> fetchUserRegistrations(
+      DateTime selectedWeekStart, DateTime selectedWeekEnd) async {
     try {
-      DateTime now = DateTime.now();
+      // Fetch new data for the selected week
+      List<User> newWeeklyRegistrations = await _barRepository
+          .fetchUserRegistrations(selectedWeekStart, selectedWeekEnd);
 
-      // Fetch weekly user registrations
-      DateTime startOfLastWeek = now.subtract(Duration(days: now.weekday));
-      weeklyUserRegistrations =
-          await _userRepository.fetchUserRegistrations(startOfLastWeek);
-
-      // Calculate the start of the previous month
-      DateTime startOfLastMonth = DateTime(now.year, now.month - 1, 1);
-
-      // Fetch monthly user registrations for the previous month
-      monthlyUserRegistrations =
-          await _userRepository.fetchUserRegistrations(startOfLastMonth);
+      // Update existing data with the new data
+      updateWeeklyUserRegistrations(newWeeklyRegistrations);
 
       onDataChanged?.call();
-
-      // if (kDebugMode) {
-      //   print(
-      //       'Weekly User Registrations Count: ${weeklyUserRegistrations.length}');
-      //   print(
-      //       'Monthly User Registrations Count: ${monthlyUserRegistrations.length}');
-      // }
       notifyListeners();
     } catch (error) {
-      // Handle the error, such as logging or displaying an error message
       if (kDebugMode) {
-        print('Error fetching user registrations: $error');
+        print('Error fetching user registrations week: $error');
       }
-      // Optionally rethrow the error if it's critical and needs to be handled at a higher level
-      // rethrow;
     }
   }
 
-  void onNewUserRegistered() {
-    // Fetch and update data for both weekly and monthly summaries
-    fetchUserRegistrations().then((_) {
+  void updateWeeklyUserRegistrations(List<User> newData) {
+    weeklyUserRegistrations
+      ..clear()
+      ..addAll(newData);
+
+    onDataChanged?.call();
+    notifyListeners();
+  }
+
+  Future<void> fetchUserRegistrationsYear(DateTime selectedYear) async {
+    try {
+      List<User> newYearRegistrations =
+          await _barRepository.fetchUserRegistrationsYear(selectedYear);
+
+      updateYearUserRegistrations(newYearRegistrations);
+
+      onDataChanged?.call();
       notifyListeners();
-    });
+    } catch (error) {
+      if (kDebugMode) {
+        print('Error fetching user registrations year: $error');
+      }
+    }
+  }
+
+  void updateYearUserRegistrations(List<User> newData) {
+    yearlyUserRegistrations
+      ..clear()
+      ..addAll(newData);
+
+    onDataChanged?.call();
+    notifyListeners();
   }
 }
-

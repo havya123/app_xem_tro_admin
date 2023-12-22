@@ -28,10 +28,10 @@ class AdminLogin extends StatelessWidget {
       bool checking = await context
           .read<AdminUserLoginProvider>()
           .login(phoneNumber, password);
-      int checkAdmin = await context
+      bool checkAdmin = await context
           .read<AdminUserLoginProvider>()
           .checkAdmin(phoneNumber, password);
-      if (checkAdmin == 0) {
+      if (checkAdmin) {
         if (checking) {
           Navigator.pushReplacementNamed(context, Routes.adminRoute);
         } else {

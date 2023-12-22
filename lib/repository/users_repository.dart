@@ -2,9 +2,11 @@
 
 import 'package:admin_app_xem_tro/models/users.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class UserRepo {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   Future<String> logIn(String phoneNumber) async {
     Map<String, dynamic>? response = await FirebaseFirestore.instance
         .collection('users')
@@ -14,13 +16,13 @@ class UserRepo {
     return response?["password"] ?? "";
   }
 
-  Future<int> checkIfAdmin(String phoneNumber) async {
+  Future<bool> checkIfAdmin(String phoneNumber) async {
     Map<String, dynamic>? response = await FirebaseFirestore.instance
         .collection('users')
         .doc(phoneNumber)
         .get()
         .then((value) => value.data());
-    return response?["role"] ?? 0;
+    return response?["isAdmin"] ?? false;
   }
 
   Future<String> checkIfPhoneNumberExists(String phoneNumber) async {
@@ -49,18 +51,26 @@ class UserRepo {
     return snapshot.docs.map((doc) => User.fromMap(doc.data())).toList();
   }
 
-  Future<User> getUserByPhoneNumber(String phoneNumber) async {
-    DocumentSnapshot<Map<String, dynamic>> snapshot =
-        await _firestore.collection('users').doc(phoneNumber).get();
+  Future<List<User>> getUsersisBan(bool isBanned) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
+        .collection("users")
+        .where("isBanned", isEqualTo: isBanned)
+        .get();
 
-    return User.fromMap(snapshot.data() ?? {});
+    return snapshot.docs.map((doc) => User.fromMap(doc.data())).toList();
   }
 
-  Future<void> updateUserStatus(
-      String userId, bool isBanned, int newRole) async {
-    await _firestore
-        .collection('users')
-        .doc(userId)
-        .update({'isBanned': isBanned, 'role': newRole});
+  Future<void> updateUserStatus(String phoneNumbers, bool isBanned) async {
+    if (phoneNumbers.isNotEmpty) {
+      String userId = phoneNumbers.toString().split(".").last.substring(0,10);
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .update({'isBanned': isBanned});
+    } else {
+      if (kDebugMode) {
+        print('User has no phone numbers.');
+      }
+    }
   }
 }

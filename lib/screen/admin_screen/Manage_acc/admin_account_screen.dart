@@ -29,10 +29,12 @@ class _AdminAccountScreenState extends State<AdminAccountScreen> {
   }
 
   Future<void> _loadUsers() async {
-    userNormalList = await _userProvider.loadUserListByRole(1);
-    userHostList = await _userProvider.loadUserListByRole(2);
+    userNormalList = await _userProvider.loadUserListByRole(0);
+    userHostList = await _userProvider.loadUserListByRole(1);
     blacklist = await _userProvider.loadBlacklist();
-    print('Blacklist Users: $blacklist');
+    if (kDebugMode) {
+      print('Blacklist Users: $blacklist');
+    }
     setState(() {});
   }
 
@@ -114,65 +116,72 @@ class _AdminAccountScreenState extends State<AdminAccountScreen> {
         ),
         Expanded(
           child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal, // Enable horizontal scrolling
-            child: DataTable(
-              columns: const [
-                DataColumn(
-                  label: Text('Name', textAlign: TextAlign.center),
-                ),
-                DataColumn(
-                  label: Text('Phone', textAlign: TextAlign.center),
-                ),
-                DataColumn(
-                  label: Text('Pass', textAlign: TextAlign.center),
-                ),
-                DataColumn(
-                  label: Text('Actions', textAlign: TextAlign.center),
-                ),
-              ],
-              rows: filteredUsers.asMap().entries.map((entry) {
-                final int index = entry.key;
-                final User user = entry.value;
-                final bool showPassword = showPasswordMap[index] ?? false;
+            scrollDirection: Axis.vertical,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+              child: DataTable(
+                columns: const [
+                  DataColumn(
+                    label: Text('STT', textAlign: TextAlign.center),
+                  ),
+                  DataColumn(
+                    label: Text('Name', textAlign: TextAlign.center),
+                  ),
+                  DataColumn(
+                    label: Text('Phone', textAlign: TextAlign.center),
+                  ),
+                  DataColumn(
+                    label: Text('Pass', textAlign: TextAlign.center),
+                  ),
+                  DataColumn(
+                    label: Text('Actions', textAlign: TextAlign.center),
+                  ),
+                ],
+                rows: filteredUsers.asMap().entries.map((entry) {
+                  final int index = entry.key;
+                  final User user = entry.value;
+                  final bool showPassword = showPasswordMap[index] ?? false;
 
-                return DataRow(cells: [
-                  DataCell(Text(user.name)),
-                  DataCell(Text(user.phoneNumber)),
-                  DataCell(
-                    Row(
-                      children: [
-                        Expanded(
-                          child: showPassword
-                              ? Text(user.password)
-                              : Text(
-                                  '*' * user.password.length,
-                                  textAlign: TextAlign.center,
-                                ),
-                        ),
-                        IconButton(
-                          icon: Icon(showPassword
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: () {
-                            setState(() {
-                              showPasswordMap[index] =
-                                  !(showPasswordMap[index] ?? false);
-                            });
-                          },
-                        ),
-                      ],
+                  return DataRow(cells: [
+                    DataCell(Text((index + 1).toString())),
+                    DataCell(Text(user.name)),
+                    DataCell(Text(user.phoneNumber)),
+                    DataCell(
+                      Row(
+                        children: [
+                          Expanded(
+                            child: showPassword
+                                ? Text(user.password)
+                                : Text(
+                                    '*' * user.password.length,
+                                    textAlign: TextAlign.center,
+                                  ),
+                          ),
+                          IconButton(
+                            icon: Icon(showPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                showPasswordMap[index] =
+                                    !(showPasswordMap[index] ?? false);
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  DataCell(
-                    ElevatedButton(
-                      onPressed: () {
-                        _toggleUserStatus(user);
-                      },
-                      child: Text(user.isBanned ? 'Unban' : 'Ban'),
+                    DataCell(
+                      ElevatedButton(
+                        onPressed: () {
+                          _toggleUserStatus(user);
+                        },
+                        child: Text(user.isBanned ? 'Unban' : 'Ban'),
+                      ),
                     ),
-                  ),
-                ]);
-              }).toList(),
+                  ]);
+                }).toList(),
+              ),
             ),
           ),
         ),

@@ -4,27 +4,34 @@ import 'package:flutter/foundation.dart';
 class BookingDataProvider extends ChangeNotifier {
   final BookingRepository _bookingRepository = BookingRepository();
 
-  int _totalBookedCount = 0;
-  int _totalCancelCount = 0;
+  int _totalWaitingCount = 0;
+  int _totalAcceptCount = 0;
+  int _totalDeclineCount = 0;
 
   VoidCallback? onDataChanged;
 
-  int get totalBookedCount => _totalBookedCount;
-  int get totalCancelCount => _totalCancelCount;
+  int get totalWaitingCount => _totalWaitingCount;
+  int get totalAcceptCount => _totalAcceptCount;
+  int get totalDeclineCount => _totalDeclineCount;
 
   Future<void> loadData() async {
     try {
-      int newBookedCount = await _bookingRepository.getTotalBookedCount();
-      int newCancelCount = await _bookingRepository.getTotalCancelCount();
+      int newWaitingCount = await _bookingRepository.getTotalWaitingCount();
+      int newAcceptCount = await _bookingRepository.getTotalAcceptCount();
+      int newDeclineCount = await _bookingRepository.getTotalDeclineCount();
 
       // Check if the data has actually changed before updating
-      if (_totalBookedCount != newBookedCount || _totalCancelCount != newCancelCount) {
-        _totalBookedCount = newBookedCount;
-        _totalCancelCount = newCancelCount;
+      if (_totalWaitingCount != newWaitingCount ||
+          _totalAcceptCount != newAcceptCount ||
+          _totalDeclineCount != newDeclineCount) {
+        _totalWaitingCount = newWaitingCount;
+        _totalAcceptCount = newAcceptCount;
+        _totalDeclineCount = newDeclineCount;
 
         if (kDebugMode) {
-          print('Total Booking Count: $_totalBookedCount');
-          print('Total Cancel Count: $_totalCancelCount');
+          print('Total Waiting Count: $_totalWaitingCount');
+          print('Total Accept Count: $_totalAcceptCount');
+          print('Total Decline Count: $_totalDeclineCount');
         }
 
         onDataChanged?.call();

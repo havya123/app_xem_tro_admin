@@ -113,20 +113,31 @@ class HouseDetailScreen extends StatelessWidget {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
-                              houseProvider.acceptHouse(house.houseId);
-                              Navigator.pop(context);
+                              _showConfirmationDialog(
+                                context,
+                                "Accept",
+                                () {
+                                  houseProvider.acceptHouse(house.houseId);
+                                  Navigator.pop(context);
+                                },
+                              );
                             },
                             child: const Text("Accept"),
                           ),
                         ),
                       const SizedBox(width: 8),
-                      if (house.status != 'accept' &&
-                          house.status != 'declines')
+                      if (house.status != 'declines')
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
-                              houseProvider.rejectHouse(house.houseId);
-                              Navigator.pop(context);
+                              _showConfirmationDialog(
+                                context,
+                                "Decline",
+                                () {
+                                  houseProvider.rejectHouse(house.houseId);
+                                  Navigator.pop(context);
+                                },
+                              );
                             },
                             child: const Text("Decline"),
                           ),
@@ -144,5 +155,36 @@ class HouseDetailScreen extends StatelessWidget {
 
   Future<void> fetchData() async {
     await Future.delayed(const Duration(seconds: 1));
+  }
+
+  void _showConfirmationDialog(
+    BuildContext context,
+    String action,
+    VoidCallback onConfirmed,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm $action"),
+          content: Text("Bạn có chắc $action duyệt nhà trọ này?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                onConfirmed();
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+              child: Text(action),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -4,6 +4,7 @@ import 'package:admin_app_xem_tro/config/size_config.dart';
 import 'package:admin_app_xem_tro/provider/combobox_value_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -67,11 +68,13 @@ class ComboBox extends StatefulWidget {
     Key? key,
     required this.title,
     required this.onValueChanged,
-    this.initialValue = "Week", // Default to "Week"
+    required this.items,
+    this.initialValue = "", // Default to an empty string
   }) : super(key: key);
 
   final String title;
   final String initialValue;
+  final List<String> items;
   final Function(String) onValueChanged;
 
   @override
@@ -84,41 +87,39 @@ class _ComboBoxState extends State<ComboBox> {
   @override
   void initState() {
     super.initState();
-    dropdownValue = widget.initialValue;
+    dropdownValue = getInitialValue();
+  }
+
+  String getInitialValue() {
+    return widget.initialValue.isNotEmpty
+        ? widget.initialValue
+        : widget.items.isNotEmpty
+            ? widget.items.first
+            : '';
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        ListTile(
-          title: Text(
-            widget.title,
-            style: const TextStyle(fontSize: 18),
-          ),
-          trailing: DropdownButton<String>(
-            key: widget.key, // Use the key to force a rebuild
-            value: dropdownValue,
-            icon: const Icon(Icons.arrow_drop_down),
-            onChanged: (newValue) {
-              setState(() {
-                dropdownValue = newValue!;
-                widget.onValueChanged(newValue); // Notify parent widget
-              });
-            },
-            items: const [
-              DropdownMenuItem(
-                value: "Week",
-                child: Text("Week"),
-              ),
-              DropdownMenuItem(
-                value: "Month",
-                child: Text("Month"),
-              ),
-            ],
-          ),
+        Text(widget.title),
+        DropdownButton<String>(
+          value: dropdownValue,
+          icon: const Icon(Icons.arrow_drop_down),
+          onChanged: (newValue) {
+            setState(() {
+              dropdownValue = newValue!;
+              widget.onValueChanged(newValue);
+            });
+          },
+          items: widget.items.map((item) {
+            return DropdownMenuItem<String>(
+              value: item,
+              child: Text(item),
+            );
+          }).toList(),
         ),
-        const SizedBox(height: 0.02)
       ],
     );
   }
