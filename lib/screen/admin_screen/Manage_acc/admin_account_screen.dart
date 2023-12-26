@@ -39,18 +39,49 @@ class _AdminAccountScreenState extends State<AdminAccountScreen> {
   }
 
   Future<void> _toggleUserStatus(User user) async {
-    try {
-      if (user.phoneNumber.isNotEmpty) {
-        await _userProvider.toggleUserStatus(user);
-        _loadUsers();
-      } else {
-        if (kDebugMode) {
-          print('Invalid user object or document ID.');
+    bool isBanning =
+        user.isBanned; // Determine if the action is banning or unbanning
+    String actionText = isBanning ? 'unban' : 'ban';
+
+    // Show a confirmation dialog
+    bool confirmAction = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('$actionText ${user.name}?'.toUpperCase()),
+          content: Text('Bạn có chắc $actionText ${user.name}?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // User pressed "Cancel"
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // User pressed "Confirm"
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmAction == true) {
+      try {
+        if (user.phoneNumber.isNotEmpty) {
+          await _userProvider.toggleUserStatus(user);
+          _loadUsers();
+        } else {
+          if (kDebugMode) {
+            print('Invalid user object or document ID.');
+          }
         }
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error toggling user status: $e');
+      } catch (e) {
+        if (kDebugMode) {
+          print('Error toggling user status: $e');
+        }
       }
     }
   }
