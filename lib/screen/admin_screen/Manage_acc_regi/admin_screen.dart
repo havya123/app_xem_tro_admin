@@ -284,14 +284,18 @@ class _AdminScreenState extends State<AdminScreen> {
     });
   }
 
+  bool isLeapYear(int year) {
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+  }
+
   Future<void> _selectYear(BuildContext context,
       {required bool isNextYear, required bool isPreviousYear}) async {
     DateTime newYearDate = selectedYear;
 
     if (isNextYear) {
-      newYearDate = selectedYear.add(Duration(days: 365));
+      newYearDate = DateTime(selectedYear.year + 1);
     } else if (isPreviousYear) {
-      newYearDate = selectedYear.subtract(Duration(days: 365));
+      newYearDate = DateTime(selectedYear.year - 1);
     }
 
     if (!isNextYear && !isPreviousYear) {
@@ -313,6 +317,7 @@ class _AdminScreenState extends State<AdminScreen> {
         selectedYear = newYearDate;
       });
     }
+
     Provider.of<BarDataProvider>(context, listen: false)
         .fetchUserRegistrationsYear(selectedYear)
         .then((_) {

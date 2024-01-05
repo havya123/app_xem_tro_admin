@@ -57,12 +57,15 @@ class BarRepository {
   }
 
   Future<List<User>> fetchUserRegistrationsYear(DateTime selectedYear) async {
+    DateTime startOfYear = DateTime(selectedYear.year, 1, 1);
+    DateTime endOfYear = DateTime(selectedYear.year + 1, 1, 1);
+
     QuerySnapshot querySnapshot = await _firestore
         .collection('users')
         .where(
           'createAt',
-          isGreaterThanOrEqualTo: selectedYear.subtract(const Duration(days: 365)),
-          isLessThan: selectedYear,
+          isGreaterThanOrEqualTo: startOfYear,
+          isLessThan: endOfYear,
         )
         .get();
 
